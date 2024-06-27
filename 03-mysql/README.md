@@ -47,3 +47,5 @@ services:
 
 volumes:
   db-data:
+```
+
