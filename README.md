@@ -14,17 +14,17 @@ In this module, you will learn how to set up Docker Desktop, which is essential 
 
 PostgreSQL is a powerful, open-source object-relational database system. This module will guide you through the installation, configuration, and basic operations of PostgreSQL. You will learn how to create databases, tables, and perform CRUD (Create, Read, Update, Delete) operations.
 
-### 03 - PostgreSQL with pgAdmin
-
-pgAdmin is a web-based administration tool for PostgreSQL. In this module, you will learn how to use pgAdmin to manage your PostgreSQL databases visually. This will include creating and managing databases, writing SQL queries, and understanding the graphical interface.
-
-### 04 - MySQL
+### 03 - Mysql
 
 MySQL is another widely-used open-source relational database management system. This module will cover the basics of MySQL, including installation, configuration, and performing SQL operations. You will also learn about some of the key differences between MySQL and PostgreSQL.
 
-### 05 - SQLite
+### 04 - SQLite
 
 SQLite is a lightweight, disk-based database that doesn’t require a separate server process. This module will introduce you to SQLite, focusing on its simplicity and ease of use. You will learn how to perform basic SQL operations and understand scenarios where SQLite is the ideal choice.
+
+### 05 - DB Beaver
+
+DB Beaver is a universal database tool for developers and database administrators. This module will show you how to install and use DB Beaver to connect to different databases, run queries, and manage database objects. You will explore the features of DB Beaver and understand how it can simplify database management tasks.
 
 ### 06 - Knex.js
 
@@ -33,6 +33,10 @@ Knex.js is a SQL query builder for JavaScript, providing a flexible way to inter
 ### 07 - Prisma
 
 Prisma is a modern database toolkit that simplifies database access for Node.js and TypeScript applications. This module will guide you through setting up Prisma, defining your data models, and performing database operations using Prisma’s intuitive API.
+
+### 08 - Database Design
+
+Database design is a critical aspect of building efficient and scalable databases. This module will cover the importance of Entity-Relationship Diagrams (ERDs) in clarifying requirements, improving communication, identifying issues early, and simplifying maintenance. You will design a database schema with additional tables and learn how to use tools like dbdiagram.io for database design.
 
 ## Learning Objectives
 

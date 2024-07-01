@@ -147,3 +147,7 @@ JOIN
 JOIN 
   courses ON enrollments.course_id = courses.course_id;
 ```
+
+## Summary
+
+In this module, you learned how to set up a PostgreSQL database using Docker Compose, create tables with relationships, insert data into tables, and query the database to retrieve data. You can now practice these concepts by working on more complex SQL queries and database operations. Happy learning!
