@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:16.3
+    environment:
+      POSTGRES_USER: it_academy
+      POSTGRES_PASSWORD: it_academy
+      POSTGRES_DB: it_academy
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
