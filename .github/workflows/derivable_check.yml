@@ -1,0 +1,84 @@
+name: SQL Derivable Check
+
+on: [push, pull_request]
+
+jobs:
+  run-checks:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16.3
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: it_academy
+          POSTGRES_PASSWORD: it_academy
+          POSTGRES_DB: it_academy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Check for erd.png
+      working-directory: ./07-sql-derivable
+      run: test -f erd.png
+
+    - name: Check for 01-schema.sql
+      working-directory: ./07-sql-derivable
+      run: test -f 01-schema.sql
+
+    - name: Check for 02-seed.sql
+      working-directory: ./07-sql-derivable
+      run: test -f 02-seed.sql
+
+    - name: Check for 03-queries.sql
+      working-directory: ./07-sql-derivable
+      run: test -f 03-queries.sql
+
+    - name: Check for 04-relationships.sql
+      working-directory: ./07-sql-derivable
+      run: test -f 04-relationships.sql
+
+    - name: Wait for PostgreSQL to be ready
+      run: until pg_isready -h localhost -p 5432 -U it_academy; do sleep 5; done;
+
+    - name: Apply schema
+      run: |
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -f ./07-sql-derivable/01-schema.sql
+
+    - name: Seed database
+      run: |
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -f ./07-sql-derivable/02-seed.sql
+
+    - name: Verify database schema and data
+      run: |
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\dt"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d students"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d courses"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d enrollments"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d instructors"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d departments"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO $$ BEGIN IF (SELECT COUNT(*) FROM students) < 3 THEN RAISE EXCEPTION 'students table has less than 3 rows'; END IF; END $$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO $$ BEGIN IF (SELECT COUNT(*) FROM courses) < 3 THEN RAISE EXCEPTION 'courses table has less than 3 rows'; END IF; END $$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO $$ BEGIN IF (SELECT COUNT(*) FROM enrollments) < 3 THEN RAISE EXCEPTION 'enrollments table has less than 3 rows'; END IF; END $$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO $$ BEGIN IF (SELECT COUNT(*) FROM instructors) < 3 THEN RAISE EXCEPTION 'instructors table has less than 3 rows'; END IF; END $$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO $$ BEGIN IF (SELECT COUNT(*) FROM departments) < 3 THEN RAISE EXCEPTION 'departments table has less than 3 rows'; END IF; END $$;"
+
+    - name: Verify UUID and VARCHAR(255)
+      run: |
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT id FROM students LIMIT 1" -t | grep -E '^[0-9a-fA-F-]{36}$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT id FROM courses LIMIT 1" -t | grep -E '^[0-9a-fA-F-]{36}$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT id FROM enrollments LIMIT 1" -t | grep -E '^[0-9a-fA-F-]{36}$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT id FROM instructors LIMIT 1" -t | grep -E '^[0-9a-fA-F-]{36}$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT id FROM departments LIMIT 1" -t | grep -E '^[0-9a-fA-F-]{36}$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT character_maximum_length FROM information_schema.columns WHERE table_name = 'students' AND column_name = 'name' AND data_type = 'character varying'" | grep -E '^255$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT character_maximum_length FROM information_schema.columns WHERE table_name = 'courses' AND column_name = 'name' AND data_type = 'character varying'" | grep -E '^255$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT character_maximum_length FROM information_schema.columns WHERE table_name = 'enrollments' AND column_name = 'name' AND data_type = 'character varying'" | grep -E '^255$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT character_maximum_length FROM information_schema.columns WHERE table_name = 'instructors' AND column_name = 'name' AND data_type = 'character varying'" | grep -E '^255$' || exit 1
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "SELECT character_maximum_length FROM information_schema.columns WHERE table_name = 'departments' AND column_name = 'name' AND data_type = 'character varying'" | grep -E '^255$' || exit 1
