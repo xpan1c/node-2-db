@@ -64,16 +64,11 @@ jobs:
         PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d enrollments"
         PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d instructors"
         PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "\d departments"
-        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c |
-          psql -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM students) < 3 THEN RAISE EXCEPTION 'students table has less than 3 rows'; END IF; END \$\$;"
-        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c |
-          psql -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM courses) < 3 THEN RAISE EXCEPTION 'courses table has less than 3 rows'; END IF; END \$\$;"
-        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c |
-          psql -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM enrollments) < 3 THEN RAISE EXCEPTION 'enrollments table has less than 3 rows'; END IF; END \$\$;"
-        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c |
-          psql -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM instructors) < 3 THEN RAISE EXCEPTION 'instructors table has less than 3 rows'; END IF; END \$\$;"
-        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c |
-          psql -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM departments) < 3 THEN RAISE EXCEPTION 'departments table has less than 3 rows'; END IF; END \$\$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM students) < 3 THEN RAISE EXCEPTION 'students table has less than 3 rows'; END IF; END \$\$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM courses) < 3 THEN RAISE EXCEPTION 'courses table has less than 3 rows'; END IF; END \$\$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM enrollments) < 3 THEN RAISE EXCEPTION 'enrollments table has less than 3 rows'; END IF; END \$\$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM instructors) < 3 THEN RAISE EXCEPTION 'instructors table has less than 3 rows'; END IF; END \$\$;"
+        PGPASSWORD=it_academy psql -h localhost -U it_academy -d it_academy -c "DO \$\$ BEGIN IF (SELECT COUNT(*) FROM departments) < 3 THEN RAISE EXCEPTION 'departments table has less than 3 rows'; END IF; END \$\$;"
 
     - name: Verify UUID and VARCHAR(255)
       run: |
